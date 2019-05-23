@@ -57,6 +57,13 @@
     self.placeholderLab.frame = self.bounds;
 }
 
+- (void)setMinH:(CGFloat)minH{
+    _minH = minH;
+    
+    CGRect frame = self.frame;
+    frame.size.height = minH;
+    self.frame = frame;
+}
 
 - (void)setAttributedText:(NSAttributedString *)attributedText{
     [super setAttributedText:attributedText];
@@ -202,6 +209,24 @@ static NSString *mark = @"link";
 
     //处理样式
     [self dealStyle];
+    
+    
+    if (self.maxH && self.minH) {
+        
+        CGRect frame = self.frame;
+
+        CGFloat textH = [textView.attributedText boundingRectWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil].size.height;
+        textH = ceil(MIN(self.maxH, textH));
+        textH = ceil(MAX(textH, self.minH));
+        
+        if (frame.size.height != textH) {
+            frame.origin.y += frame.size.height - textH;
+            frame.size.height = textH;
+            self.frame = frame;
+            [textView scrollRangeToVisible:NSMakeRange(textView.attributedText.length, 1)];
+        }
+    }
+
 
     if (self.textDidChangeBlock) {
         self.textDidChangeBlock(self);

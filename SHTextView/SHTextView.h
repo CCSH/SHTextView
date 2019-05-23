@@ -22,6 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
 // 默认提示文案Lab
 @property (nonatomic, strong) UILabel *placeholderLab;
 
+//以下两个属性搭配使用
+//最大高度(此属性设置了则会随着输入自动改变高度)
+@property (nonatomic, assign) CGFloat maxH;
+//最小高度(此属性设置了则会随着输入自动改变高度)
+@property (nonatomic, assign) CGFloat minH;
+
 // 文本改变
 @property (nonatomic, strong) void(^textDidChangeBlock)(SHTextView *textView);
 // 开始编辑
