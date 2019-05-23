@@ -12,3 +12,6 @@ pod 'SHTextView'
 - [x] 自定义占位文字
 - [x] 随用户输入自动改变文本框高度
 - [x] 小细节优化
+
+
+![image](https://github.com/CCSH/SHTextView/QQ20190523-172440-HD.gif)
