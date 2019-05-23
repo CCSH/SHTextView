@@ -14,4 +14,4 @@ pod 'SHTextView'
 - [x] 小细节优化
 
 
-![image](https://github.com/CCSH/SHTextView/QQ20190523-172440-HD.gif)
+![image](https://github.com/CCSH/SHTextView/blob/master/QQ20190523-172440-HD.gif)
