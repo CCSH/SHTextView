@@ -38,10 +38,10 @@
 }
 
 #pragma mark - SET
-//- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset {
-//    CGFloat padding = self.textContainer.lineFragmentPadding;
-//    [super setTextContainerInset:UIEdgeInsetsMake(textContainerInset.top, textContainerInset.left - padding, textContainerInset.bottom, textContainerInset.right - padding)];
-//}
+- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset {
+    CGFloat padding = self.textContainer.lineFragmentPadding;
+    [super setTextContainerInset:UIEdgeInsetsMake(textContainerInset.top, textContainerInset.left - padding, textContainerInset.bottom, textContainerInset.right - padding)];
+}
 
 - (void)setEditable:(BOOL)editable {
     [super setEditable:editable];
@@ -124,6 +124,26 @@ static NSString *mark = @"link";
 
         self.selectedRange = range;
     }
+    
+    if (self.maxH && self.minH) {
+        
+        __block CGRect frame = self.frame;
+        
+        CGFloat textH = ceil([self.attributedText boundingRectWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil].size.height);
+        textH = MIN(self.maxH, textH);
+        textH = MAX(textH, self.minH);
+        
+        if (frame.size.height != textH) {
+            
+            frame.origin.y += frame.size.height - textH;
+            frame.size.height = textH;
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                self.frame = frame;
+            }];
+        }
+    }
+    [self scrollRangeToVisible:self.selectedRange];
 }
 
 #pragma mark - editable (NO)
@@ -218,26 +238,6 @@ static NSString *mark = @"link";
 
     //处理样式
     [self dealStyle];
-
-    if (self.maxH && self.minH) {
-        
-        __block CGRect frame = self.frame;
-
-        CGFloat textH = ceil([textView.attributedText boundingRectWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil].size.height);
-        textH = MIN(self.maxH, textH);
-        textH = MAX(textH, self.minH);
-
-        if (frame.size.height != textH) {
-            
-            frame.origin.y += frame.size.height - textH;
-            frame.size.height = textH;
-            
-            [UIView animateWithDuration:0.25 animations:^{
-                self.frame = frame;
-            }];
-        }
-    }
-    [textView scrollRangeToVisible:self.selectedRange];
 
     if (self.textDidChangeBlock) {
         self.textDidChangeBlock(self);

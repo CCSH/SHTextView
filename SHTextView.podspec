@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name         = "SHTextView"
-    s.version      = "1.1.1"
+    s.version      = "1.1.2"
     s.summary      = "文本局部点击,定制文本输入框"
     s.homepage     = "https://github.com/CCSH/SHTextView"
     s.source       = { :git => "https://github.com/CCSH/SHTextView.git", :tag => s.version }
