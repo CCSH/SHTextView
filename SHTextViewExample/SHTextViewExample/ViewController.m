@@ -22,32 +22,36 @@
     // Do any additional setup after loading the view.
 
     //编辑
-    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-    style.lineSpacing = 6;
-
-    NSDictionary *dic = @{ NSForegroundColorAttributeName: [UIColor whiteColor],
-                           NSFontAttributeName: [UIFont systemFontOfSize:18],
-                           NSParagraphStyleAttributeName: style };
-
-    self.textView1.placeholderLab.frame = CGRectMake(5, 0, 0, 0);
+    //提示文字
+    self.textView1.placeholderLab.frame = CGRectMake(5, 2, 0, 0);
     self.textView1.placeholderLab.text = @"我是提示文字";
+    self.textView1.placeholderLab.font = [UIFont systemFontOfSize:16];
     [self.textView1.placeholderLab sizeToFit];
-
     CGRect frame = self.textView1.placeholderLab.frame;
     frame.size = self.textView1.placeholderLab.frame.size;
     self.textView1.placeholderLab.frame = frame;
+    
+    //光标位置
+    self.textView1.positionF = CGRectMake(0, 4, 0, 16);
 
     self.textView1.text = @"1234";
-    self.textView1.globalAtts = dic;
     
+    //全局属性
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.lineSpacing = 6;
+    self.textView1.globalAtts = @{ NSForegroundColorAttributeName: [UIColor whiteColor],
+                                   NSFontAttributeName: [UIFont systemFontOfSize:18],
+                                   NSParagraphStyleAttributeName: style };
     
+    //自适应
     self.textView1.maxH = 100;
-    self.textView1.minH = 25;
+    self.textView1.minH = 20;
 
     [self.view addSubview:self.textView1];
-
+    
+    
     //点击
-    NSString *content = @"阿松的海景房abcdefghijklmnopqrstuvwxy结婚的高发杉本繁郎火213472013sadf我被批好闻哦内存三次吧类型国产赛跑堵车比USA的撒开了短发后撒电话发菩我和谁都烦死了都快分17600017559 624089195@qq.com";
+    NSString *content = @"阿松的海景房abcdefghijklmnopqrstuvwxy结婚的高发杉本繁郎火213472013sadf我被批好闻哦内存三次吧类型国产赛跑堵车比USA的撒开了短发后撒电话发菩我和谁都烦死了都快分17600017559 啊啥的反馈个撒 624089195@qq.com   was 看到法国萨的";
 
     NSMutableArray *modelArr = [[NSMutableArray alloc] init];
     NSInteger loc = 0;
@@ -78,8 +82,8 @@
 
     //设置内容填充
     UIView *view = [[UIView alloc] init];
-    view.frame = CGRectMake(70, 25, 30, 30);
-    view.backgroundColor = [UIColor orangeColor];
+    view.frame = CGRectMake(100, 25, 30, 30);
+    view.backgroundColor = [UIColor redColor];
     [self.textView2 addSubview:view];
     self.textView2.frameArr = @[[NSValue valueWithCGRect:view.frame]];
 

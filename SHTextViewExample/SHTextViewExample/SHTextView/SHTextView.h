@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 // 默认提示文案Lab
 @property (nonatomic, strong) UILabel *placeholderLab;
 
+//光标F
+@property (nonatomic, assign) CGRect positionF;
+
 //以下两个属性搭配使用
 //最大高度(此属性设置了则会随着输入自动改变高度)
 @property (nonatomic, assign) CGFloat maxH;

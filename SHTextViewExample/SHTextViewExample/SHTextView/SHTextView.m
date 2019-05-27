@@ -38,10 +38,10 @@
 }
 
 #pragma mark - SET
-- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset {
-    CGFloat padding = self.textContainer.lineFragmentPadding;
-    [super setTextContainerInset:UIEdgeInsetsMake(textContainerInset.top, textContainerInset.left - padding, textContainerInset.bottom, textContainerInset.right - padding)];
-}
+//- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset {
+//    CGFloat padding = self.textContainer.lineFragmentPadding;
+//    [super setTextContainerInset:UIEdgeInsetsMake(textContainerInset.top, textContainerInset.left - padding, textContainerInset.bottom, textContainerInset.right - padding)];
+//}
 
 - (void)setEditable:(BOOL)editable {
     [super setEditable:editable];
@@ -51,28 +51,40 @@
     }
 }
 
-- (void)setFrame:(CGRect)frame{
-    [super setFrame:frame];
-    
-    self.placeholderLab.frame = self.bounds;
-}
-
-- (void)setMinH:(CGFloat)minH{
+- (void)setMinH:(CGFloat)minH {
     _minH = minH;
-    
+
     CGRect frame = self.frame;
     frame.size.height = minH;
     self.frame = frame;
 }
 
-- (void)setAttributedText:(NSAttributedString *)attributedText{
+- (void)setAttributedText:(NSAttributedString *)attributedText {
     [super setAttributedText:attributedText];
     [self dealPlaceholder];
 }
 
-- (void)setText:(NSString *)text{
+- (void)setText:(NSString *)text {
     [super setText:text];
     [self dealPlaceholder];
+}
+
+- (CGRect)caretRectForPosition:(UITextPosition *)position {
+    CGRect rect = [super caretRectForPosition:position];
+
+    if (self.positionF.origin.x) {
+        rect.origin.x += self.positionF.origin.x;
+    }
+    if (self.positionF.origin.y) {
+        rect.origin.y += self.positionF.origin.y;
+    }
+    if (self.positionF.size.height) {
+        rect.size.height = self.positionF.size.height;
+    }
+    if (self.positionF.size.width) {
+        rect.size.width = self.positionF.size.width;
+    }
+    return rect;
 }
 
 #pragma mark - 懒加载
@@ -89,7 +101,7 @@
 }
 
 #pragma mark - editable (YES) 默认
-- (void)setGlobalAtts:(NSDictionary *)globalAtts{
+- (void)setGlobalAtts:(NSDictionary *)globalAtts {
     _globalAtts = globalAtts;
     [self dealStyle];
 }
@@ -103,15 +115,13 @@ static NSString *mark = @"link";
 
 #pragma mark 处理样式
 - (void)dealStyle {
-    
     if (self.attributedText.length && self.globalAtts) {
-        
         NSRange range = self.selectedRange;
-        
+
         NSMutableAttributedString *att = [[NSMutableAttributedString alloc] initWithAttributedString:self.attributedText];
         [att addAttributes:self.globalAtts range:NSMakeRange(0, att.length)];
         self.attributedText = att;
-        
+
         self.selectedRange = range;
     }
 }
@@ -164,6 +174,7 @@ static NSString *mark = @"link";
 
 #pragma mark - 点击判断
 - (BOOL)didSelectLinkWithUrl:(NSURL *)URL {
+    //是否是自定义的
     if ([URL.scheme isEqualToString:mark]) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             __weak typeof(self) weakSelf = self;
@@ -172,7 +183,6 @@ static NSString *mark = @"link";
                 self.textClickBlock(weakSelf.linkArr[idx], self);
             }
         });
-
         return YES;
     }
     return NO;
@@ -199,34 +209,35 @@ static NSString *mark = @"link";
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
-    
     //处理提示文字
     [self dealPlaceholder];
-    
+
     if (self.markedTextRange) {
         return;
     }
 
     //处理样式
     [self dealStyle];
-    
-    
+
     if (self.maxH && self.minH) {
         
-        CGRect frame = self.frame;
+        __block CGRect frame = self.frame;
 
-        CGFloat textH = [textView.attributedText boundingRectWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil].size.height;
-        textH = ceil(MIN(self.maxH, textH));
-        textH = ceil(MAX(textH, self.minH));
-        
+        CGFloat textH = ceil([textView.attributedText boundingRectWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil].size.height);
+        textH = MIN(self.maxH, textH);
+        textH = MAX(textH, self.minH);
+
         if (frame.size.height != textH) {
+            
             frame.origin.y += frame.size.height - textH;
             frame.size.height = textH;
-            self.frame = frame;
-            [textView scrollRangeToVisible:NSMakeRange(textView.attributedText.length, 1)];
+            
+            [UIView animateWithDuration:0.25 animations:^{
+                self.frame = frame;
+            }];
         }
     }
-
+    [textView scrollRangeToVisible:self.selectedRange];
 
     if (self.textDidChangeBlock) {
         self.textDidChangeBlock(self);
