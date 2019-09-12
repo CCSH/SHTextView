@@ -35,6 +35,9 @@
     self.textContainerInset = UIEdgeInsetsZero;
     self.dataDetectorTypes = UIDataDetectorTypeAll;
     self.autocorrectionType = UITextAutocorrectionTypeNo;
+    if (@available(iOS 11.0, *)) {
+        self.textDragInteraction.enabled = NO;
+    }
 }
 
 #pragma mark - SET

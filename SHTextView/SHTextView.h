@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class SHTextView,SHTextModel;
+@class SHTextModel;
 
 @interface SHTextView : UITextView
 
